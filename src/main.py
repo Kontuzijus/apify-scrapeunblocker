@@ -53,7 +53,7 @@ async def main():
         # 2. Give the Apify system (S3/CDN) a solid delay for file synchronization
         # This resolves the "URL is not accessible" error in the Iframe view.
         print("⏳ Waiting for cloud storage synchronization...")
-        await asyncio.sleep(5)
+        await asyncio.sleep(15)
 
         # 3. Push data to the Dataset at the very end
         await Actor.push_data({
