@@ -1,0 +1,14 @@
+{
+  "title": "ScrapeUnblocker",
+  "type": "object",
+  "schemaVersion": 1,
+  "properties": {
+    "url": {
+      "title": "Target URL",
+      "type": "string",
+      "description": "The URL you want to scrape",
+      "editor": "textfield"
+    }
+  },
+  "required": ["url"]
+}
