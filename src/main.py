@@ -20,7 +20,6 @@ async def main():
 
         params = {"url": url}
 
-        import time
         max_retries = 1
         attempt = 0
         response = None
@@ -38,8 +37,7 @@ async def main():
             print(f"⚠️ Warning: Received status code {response.status_code}. Response: {response.text}")
             attempt += 1
             if attempt <= max_retries:
-                print("⏳ Retrying in 2 seconds...")
-                time.sleep(2)
+                print("⏳ Retrying immediately...")
 
         if response.status_code != 200:
             raise Exception(f"❌ ScrapeUnblocker failed after {max_retries + 1} attempts. Final status code: {response.status_code}. Response: {response.text}")
