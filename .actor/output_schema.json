@@ -4,9 +4,11 @@
   "description": "Returns scraped HTML output",
   "properties": {
     "html": {
-      "type": "string",
       "title": "HTML Output",
-      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/output.html"
+      "type": "string",
+      "format": "uri",
+      "contentMediaType": "text/html",
+      "url": "{{links.apiDefaultKeyValueStoreUrl}}/records/output.html"
     }
   }
 }
