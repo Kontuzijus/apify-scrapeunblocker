@@ -75,6 +75,5 @@ async def main():
             "html": html,
         })
 
-        if __name__ == "__main__":
-    import asyncio
+if __name__ == "__main__":
     asyncio.run(main())
