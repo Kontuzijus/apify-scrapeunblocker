@@ -3,7 +3,7 @@
   "name": "Scrapeunblocker",
   "title": "Scrape single page in Python",
   "description": "Scrape data from single page with provided URL.",
-  "version": "0.0",
+  "version": "1.0",
   "buildTag": "latest",
   "meta": {
     "templateId": "python-start"
