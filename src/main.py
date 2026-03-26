@@ -1,5 +1,6 @@
 import os
 import requests
+import asyncio
 from apify import Actor
 
 async def main():
@@ -55,6 +56,10 @@ async def main():
             "url": url,
             "html": html,
         })
+        
+        # Suteikiame Apify sistemai kelias sekundes "suvirškinti" ir įkelti failus į KVS
+        # prieš Actoriui užbaigiant darbą.
+        await asyncio.sleep(2.5)
 
 if __name__ == "__main__":
     import asyncio
