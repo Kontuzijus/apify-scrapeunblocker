@@ -2,11 +2,13 @@
   "actorOutputSchemaVersion": 1,
   "title": "ScrapeUnblocker output",
   "description": "Returns scraped HTML output",
-  "properties": {
-    "html": {
-      "type": "string",
+  "views": {
+    "html_report": {
       "title": "HTML Output",
-      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/output.html"
+      "type": "html",
+      "source": {
+        "key": "OUTPUT"
+      }
     }
   }
 }
