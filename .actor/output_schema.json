@@ -2,6 +2,7 @@
   "actorOutputSchemaVersion": 1,
   "title": "ScrapeUnblocker output",
   "description": "Returns scraped HTML output",
+  "properties": {},
   "views": {
     "html_report": {
       "title": "HTML Output",
