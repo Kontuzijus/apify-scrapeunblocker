@@ -66,7 +66,7 @@ import requests
 API_TOKEN = "YOUR_APIFY_TOKEN"
 
 response = requests.post(
-    f"https://api.apify.com/v2/acts/scrapeunblocker~scrapeunblocker/run-sync?token={API_TOKEN}",
+    f"https://api.apify.com/v2/acts/kontuzijus~scrapeunblocker/run-sync?token={API_TOKEN}",
     json={"url": "https://example.com"}
 )
 
@@ -79,7 +79,7 @@ print(html[:500])
 ### cURL example
 
 ```bash
-curl -X POST "https://api.apify.com/v2/acts/scrapeunblocker~scrapeunblocker/run-sync?token=YOUR_APIFY_TOKEN" \
+curl -X POST "https://api.apify.com/v2/acts/kontuzijus~scrapeunblocker/run-sync?token=YOUR_APIFY_TOKEN" \
   -H "Content-Type: application/json" \
   -d '{"url": "https://example.com"}' 
 ```
