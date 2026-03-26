@@ -46,21 +46,35 @@ async def main():
         response.encoding = "utf-8"
         html = response.text
 
-        # 1. Save files to Key-Value Store first
+        # 1. Save files to Key-Value Store
         await Actor.set_value("OUTPUT", html, content_type="text/html")
         await Actor.set_value("output.html", html, content_type="text/html")
-        
-        # 2. Give the Apify system (S3/CDN) a solid delay for file synchronization
-        # This resolves the "URL is not accessible" error in the Iframe view.
-        print("⏳ Waiting for cloud storage synchronization...")
-        await asyncio.sleep(15)
 
-        # 3. Push data to the Dataset at the very end
+        # 2. Wait until the output URL is actually accessible by the outside world
+        # This forces the Actor to stay alive until the CDN/S3 has propagated the file.
+        store_id = os.environ.get("APIFY_DEFAULT_KEY_VALUE_STORE_ID")
+        if store_id:
+            public_url = f"https://api.apify.com/v2/key-value-stores/{store_id}/records/output.html"
+            print(f"⏳ Verifying public accessibility of: {public_url}")
+
+            for i in range(30):  # Try for up to 30 seconds
+                try:
+                    check_resp = requests.get(public_url)
+                    if check_resp.status_code == 200:
+                        print(f"✅ Output is now publicly accessible (took {i}s)")
+                        break
+                except Exception:
+                    pass
+                await asyncio.sleep(1)
+        else:
+            await asyncio.sleep(2)
+
+        # 3. Push data to the Dataset and finish
         await Actor.push_data({
             "url": url,
             "html": html,
         })
 
-if __name__ == "__main__":
+        if __name__ == "__main__":
     import asyncio
     asyncio.run(main())
