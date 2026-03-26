@@ -1,6 +1,6 @@
 # 🚀 ScrapeUnblocker - Bypass Anti-Bot Systems & Get Clean HTML
 
-ScrapeUnblocker allows you to fetch the full HTML of almost any website - even those protected by advanced anti-bot systems.
+**ScrapeUnblocker is the most advanced tool on the market, capable of defeating the most complex protections and anti-bot systems.** It allows you to fetch the full HTML of almost any website effortlessly.
 
 Just provide a URL → get clean HTML.
 
@@ -97,7 +97,7 @@ curl -X POST "https://api.apify.com/v2/acts/scrapeunblocker~scrapeunblocker/run-
 
 ## ⚠️ Important notes
 
-* Some websites may still require retries
+* **Retries are expected:** Due to the nature of complex anti-bot systems, requests might not always succeed on the first try and you may encounter errors. If a request fails, we highly recommend trying again, as subsequent attempts are often successful.
 * Response time depends on target protection level
 * Works best for full-page HTML retrieval (not APIs)
 
