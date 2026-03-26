@@ -20,11 +20,30 @@ async def main():
 
         params = {"url": url}
 
-        response = requests.post(
-            "https://api.scrapeunblocker.com/getPageSource",
-            headers=headers,
-            params=params,
-        )
+        import time
+        max_retries = 1
+        attempt = 0
+        response = None
+
+        while attempt <= max_retries:
+            response = requests.post(
+                "https://api.scrapeunblocker.com/getPageSource",
+                headers=headers,
+                params=params,
+            )
+            
+            if response.status_code == 200:
+                break
+            
+            print(f"⚠️ Warning: Received status code {response.status_code}. Response: {response.text}")
+            attempt += 1
+            if attempt <= max_retries:
+                print("⏳ Retrying in 2 seconds...")
+                time.sleep(2)
+
+        if response.status_code != 200:
+            raise Exception(f"❌ ScrapeUnblocker failed after {max_retries + 1} attempts. Final status code: {response.status_code}. Response: {response.text}")
+
         response.encoding = "utf-8"
         html = response.text
 
