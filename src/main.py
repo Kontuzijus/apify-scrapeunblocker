@@ -45,7 +45,12 @@ async def main():
         response.encoding = "utf-8"
         html = response.text
 
+        # Save for run-sync API response
         await Actor.set_value("OUTPUT", html, content_type="text/html")
+        
+        # Save for Apify UI preview tab
+        await Actor.set_value("output.html", html, content_type="text/html")
+
         await Actor.push_data({
             "url": url,
             "html": html,
