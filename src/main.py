@@ -46,20 +46,20 @@ async def main():
         response.encoding = "utf-8"
         html = response.text
 
-        # Save for run-sync API response
+        # 1. Save files to Key-Value Store first
         await Actor.set_value("OUTPUT", html, content_type="text/html")
-        
-        # Save for Apify UI preview tab
         await Actor.set_value("output.html", html, content_type="text/html")
+        
+        # 2. Give the Apify system (S3/CDN) a solid delay for file synchronization
+        # This resolves the "URL is not accessible" error in the Iframe view.
+        print("⏳ Waiting for cloud storage synchronization...")
+        await asyncio.sleep(5)
 
+        # 3. Push data to the Dataset at the very end
         await Actor.push_data({
             "url": url,
             "html": html,
         })
-        
-        # Suteikiame Apify sistemai kelias sekundes "suvirškinti" ir įkelti failus į KVS
-        # prieš Actoriui užbaigiant darbą.
-        await asyncio.sleep(2.5)
 
 if __name__ == "__main__":
     import asyncio
