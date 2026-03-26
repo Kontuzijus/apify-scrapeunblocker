@@ -10,7 +10,7 @@ Just provide a URL → get clean HTML.
 
 Most scraping tools fail on protected websites.
 
-ScrapeUnblocker solves this by using real browser-like behavior and advanced bypass techniques. 
+ScrapeUnblocker solves this by using real browser-like behavior and advanced bypass techniques.
 
 * No browser setup
 * No proxy setup
