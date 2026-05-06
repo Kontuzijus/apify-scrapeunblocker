@@ -1,7 +1,10 @@
 import os
 import requests
+import urllib3
 import asyncio
 from apify import Actor
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 async def main():
     async with Actor:
@@ -30,6 +33,7 @@ async def main():
                 "https://api.scrapeunblocker.com/getPageSource",
                 headers=headers,
                 params=params,
+                verify=False,
             )
             
             if response.status_code == 200:
