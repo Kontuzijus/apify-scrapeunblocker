@@ -79,9 +79,8 @@ async def main():
             response.encoding = "utf-8"
             html = response.text
 
-            # Save files to Key-Value Store
+            # Save to Key-Value Store (OUTPUT is what run-sync returns)
             await Actor.set_value("OUTPUT", html, content_type="text/html")
-            await Actor.set_value("output.html", html, content_type="text/html")
 
             # Push data to the Dataset
             await Actor.push_data({
