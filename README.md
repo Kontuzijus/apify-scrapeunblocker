@@ -1,8 +1,8 @@
-# 🚀 ScrapeUnblocker - Bypass Anti-Bot Systems & Get Clean HTML
+# 🚀 ScrapeUnblocker - Bypass Anti-Bot Systems & Get Clean HTML or Parsed JSON
 
-**ScrapeUnblocker is the most advanced tool on the market, capable of defeating the most complex protections and anti-bot systems.** It allows you to fetch the full HTML of almost any website effortlessly.
+**ScrapeUnblocker is the most advanced tool on the market, capable of defeating the most complex protections and anti-bot systems.** It fetches the full HTML of almost any website effortlessly — and can now return **ready-to-use structured JSON** instead of raw HTML.
 
-Just provide a URL → get clean HTML.
+Just provide a URL → get clean HTML, or flip one switch → get **parsed data** extracted for you.
 
 ---
 
@@ -10,7 +10,7 @@ Just provide a URL → get clean HTML.
 
 Most scraping tools fail on protected websites.
 
-ScrapeUnblocker solves this by using real browser-like behavior and advanced bypass techniques. 
+ScrapeUnblocker solves this by using real browser-like behavior and advanced bypass techniques.
 
 * No browser setup
 * No proxy setup
@@ -18,17 +18,31 @@ ScrapeUnblocker solves this by using real browser-like behavior and advanced byp
 
 ---
 
+## ✨ NEW: Get parsed data instantly (`parsed_data`)
+
+Stop writing brittle HTML parsers. Set `parsed_data: true` and ScrapeUnblocker returns **clean structured JSON** — titles, prices, listings, key fields — extracted straight from the page via Schema.org / `__NEXT_DATA__` / AI-generated rules.
+
+* 🧠 **Skip the parsing work** — get usable JSON, not a 1 MB HTML blob
+* 🤖 **AI-powered extraction** that adapts per page type
+* 🔁 **One input flag** — `parsed_data: true`, nothing else to set up
+
+This is a genuine superpower: bypass the anti-bot **and** the data is already structured for you.
+
+---
+
 ## 🛠️ Features
 
 * Fetch full HTML from protected websites
+* **Optional parsed JSON output** (`parsed_data: true`)
 * Supports Cloudflare, PerimeterX, DataDome, Akamai
 * Built-in rotating proxies
 * Minimal input (only URL required)
-* Returns raw HTML (NOT JSON-wrapped)
 
 ---
 
 ## 📥 Input
+
+Raw HTML (default):
 
 ```json
 {
@@ -36,23 +50,44 @@ ScrapeUnblocker solves this by using real browser-like behavior and advanced byp
 }
 ```
 
----
+Parsed structured JSON:
 
-## 📤 Output
-
-Returns **raw HTML string** (not JSON):
-
-```html
-<html>...</html>
+```json
+{
+  "url": "https://example.com",
+  "parsed_data": true
+}
 ```
 
 ---
 
-## 📊 Output schema (for Apify UI)
+## 📤 Output
 
-| Field | Type   | Description |
-| ----- | ------ | ----------- |
-| html  | string | Full HTML   |
+**Default (`parsed_data: false`)** — one dataset item with the full HTML:
+
+```json
+{
+  "url": "https://example.com",
+  "html": "<html>...</html>"
+}
+```
+
+**With `parsed_data: true`** — one dataset item with structured JSON (shape depends on the page type):
+
+```json
+{
+  "url": "https://autoplius.lt/skelbimai/naudoti-automobiliai",
+  "page_type": "search_list",
+  "data": {
+    "results": {
+      "items": [
+        { "title": "BMW i5 2024 ...", "url": "https://autoplius.lt/skelbimai/..." }
+      ]
+    }
+  },
+  "source": "ai-rules"
+}
+```
 
 ---
 
@@ -66,12 +101,11 @@ import requests
 API_TOKEN = "YOUR_APIFY_TOKEN"
 
 response = requests.post(
-    f"https://api.apify.com/v2/acts/kontuzijus~scrapeunblocker/run-sync?token={API_TOKEN}",
-    json={"url": "https://example.com"}
+    f"https://api.apify.com/v2/acts/kontuzijus~scrapeunblocker/run-sync-get-dataset-items?token={API_TOKEN}",
+    json={"url": "https://example.com", "parsed_data": True}
 )
 
-html = response.text
-print(html[:500])
+print(response.json())
 ```
 
 ---
@@ -79,9 +113,9 @@ print(html[:500])
 ### cURL example
 
 ```bash
-curl -X POST "https://api.apify.com/v2/acts/kontuzijus~scrapeunblocker/run-sync?token=YOUR_APIFY_TOKEN" \
+curl -X POST "https://api.apify.com/v2/acts/kontuzijus~scrapeunblocker/run-sync-get-dataset-items?token=YOUR_APIFY_TOKEN" \
   -H "Content-Type: application/json" \
-  -d '{"url": "https://example.com"}' 
+  -d '{"url": "https://example.com", "parsed_data": true}'
 ```
 
 ---
@@ -89,7 +123,7 @@ curl -X POST "https://api.apify.com/v2/acts/kontuzijus~scrapeunblocker/run-sync?
 ## 🔁 Real use cases
 
 * Scraping marketplaces (cars, real estate, e-commerce)
-* Extracting data from protected pages
+* Extracting **structured data** from protected pages without writing parsers
 * Feeding HTML into BeautifulSoup / Cheerio / LLMs
 * Monitoring competitor pages
 
@@ -98,13 +132,13 @@ curl -X POST "https://api.apify.com/v2/acts/kontuzijus~scrapeunblocker/run-sync?
 ## ⚠️ Important notes
 
 * **Retries are expected:** Due to the nature of complex anti-bot systems, requests might not always succeed on the first try and you may encounter errors. If a request fails, we highly recommend trying again, as subsequent attempts are often successful.
+* When `parsed_data: true` is used on a brand-new domain, extraction rules may still be generating — the Actor automatically waits and retries until the parsed result is ready.
 * Response time depends on target protection level
-* Works best for full-page HTML retrieval (not APIs)
 
 ---
 
-## 💡 Pro tip
+## 💡 More tools, docs & functionality
 
-Need higher volume, better pricing, or full control?
+ScrapeUnblocker also offers SERP scraping, image fetching, cookies retrieval and more.
 
-👉 Use ScrapeUnblocker API directly instead of Apify
+👉 Explore the full documentation and feature set at **[scrapeunblocker.com](https://www.scrapeunblocker.com/)**

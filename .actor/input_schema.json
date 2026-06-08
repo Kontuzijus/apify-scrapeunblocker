@@ -8,6 +8,12 @@
       "type": "string",
       "description": "The URL you want to scrape",
       "editor": "textfield"
+    },
+    "parsed_data": {
+      "title": "Return parsed data",
+      "type": "boolean",
+      "description": "If enabled, returns structured JSON data extracted from the page (via Schema.org / __NEXT_DATA__ / AI rules) instead of the raw HTML.",
+      "default": false
     }
   },
   "required": ["url"]
