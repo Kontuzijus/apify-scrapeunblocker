@@ -6,7 +6,7 @@
     "html": {
       "type": "string",
       "title": "HTML Output",
-      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/output.html"
+      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/OUTPUT"
     }
   }
 }
