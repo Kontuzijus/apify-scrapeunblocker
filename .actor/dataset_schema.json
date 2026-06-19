@@ -20,6 +20,7 @@
   "views": {
     "overview": {
       "title": "Overview",
+      "description": "Raw HTML output (parsed_data = false)",
       "transformation": {
         "fields": ["url", "html"]
       },
@@ -33,6 +34,22 @@
           "html": {
             "label": "HTML",
             "format": "text"
+          }
+        }
+      }
+    },
+    "parsed": {
+      "title": "Parsed data",
+      "description": "Structured JSON output (parsed_data = true); extracted fields vary by page type",
+      "transformation": {
+        "fields": ["url"]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "url": {
+            "label": "Scraped URL",
+            "format": "link"
           }
         }
       }
