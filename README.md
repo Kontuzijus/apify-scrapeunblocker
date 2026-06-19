@@ -77,15 +77,13 @@ Parsed structured JSON:
 ```json
 {
   "url": "https://autoplius.lt/skelbimai/naudoti-automobiliai",
-  "page_type": "search_list",
   "data": {
     "results": {
       "items": [
         { "title": "BMW i5 2024 ...", "url": "https://autoplius.lt/skelbimai/..." }
       ]
     }
-  },
-  "source": "ai-rules"
+  }
 }
 ```
 

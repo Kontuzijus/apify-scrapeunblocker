@@ -14,6 +14,11 @@
         "title": "HTML",
         "description": "Full page HTML returned for the URL (present when parsed_data is false)",
         "example": "<html>...</html>"
+      },
+      "data": {
+        "type": "object",
+        "title": "Parsed data",
+        "description": "Structured JSON extracted from the page (present when parsed_data is true); shape varies by page type"
       }
     }
   },
@@ -42,7 +47,7 @@
       "title": "Parsed data",
       "description": "Structured JSON output (parsed_data = true); extracted fields vary by page type",
       "transformation": {
-        "fields": ["url"]
+        "fields": ["url", "data"]
       },
       "display": {
         "component": "table",
@@ -50,6 +55,10 @@
           "url": {
             "label": "Scraped URL",
             "format": "link"
+          },
+          "data": {
+            "label": "Parsed data",
+            "format": "object"
           }
         }
       }

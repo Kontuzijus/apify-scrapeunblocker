@@ -72,9 +72,11 @@ async def main():
 
             await Actor.set_value("OUTPUT", json.dumps(data, ensure_ascii=False), content_type="application/json")
 
-            # Push the parsed JSON as a single dataset item, prefixed with the
-            # scraped URL for traceability.
-            await Actor.push_data({"url": url, **data})
+            # Push the parsed JSON as a single dataset item under a stable "data"
+            # key (matches the README contract and lets the dataset schema render
+            # it as an Object field). Nesting also avoids spreading a non-dict
+            # (the parsed payload can be a list).
+            await Actor.push_data({"url": url, "data": data})
         else:
             response.encoding = "utf-8"
             html = response.text
