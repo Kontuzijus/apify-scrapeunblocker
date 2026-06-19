@@ -18,7 +18,19 @@
       "data": {
         "type": "object",
         "title": "Parsed data",
-        "description": "Structured JSON extracted from the page (present when parsed_data is true); shape varies by page type"
+        "description": "Structured JSON extracted from the page (present when parsed_data is true); shape varies by page type",
+        "example": {
+          "results": {
+            "items": [
+              {
+                "title": "Example Business",
+                "rating": 4.5,
+                "reviews": 128,
+                "url": "https://www.yelp.com/biz/example-business"
+              }
+            ]
+          }
+        }
       }
     }
   },
