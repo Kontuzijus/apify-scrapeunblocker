@@ -1,0 +1,41 @@
+{
+  "actorSpecification": 1,
+  "fields": {
+    "type": "object",
+    "properties": {
+      "url": {
+        "type": "string",
+        "title": "Scraped URL",
+        "description": "The URL that was scraped",
+        "example": "https://etherscan.io/address/0xd8dA6BF26964aF9D7eEd9e03E53415D37aA96045"
+      },
+      "html": {
+        "type": "string",
+        "title": "HTML",
+        "description": "Full page HTML returned for the URL (present when parsed_data is false)",
+        "example": "<html>...</html>"
+      }
+    }
+  },
+  "views": {
+    "overview": {
+      "title": "Overview",
+      "transformation": {
+        "fields": ["url", "html"]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "url": {
+            "label": "Scraped URL",
+            "format": "link"
+          },
+          "html": {
+            "label": "HTML",
+            "format": "text"
+          }
+        }
+      }
+    }
+  }
+}

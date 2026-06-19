@@ -3,12 +3,15 @@
   "name": "Scrapeunblocker",
   "title": "ScrapeUnblocker - Bypass Anti-Bot & Get HTML or Parsed JSON",
   "description": "Bypass anti-bot systems (Cloudflare, DataDome, PerimeterX, Akamai) and scrape any URL. Get clean full-page HTML, or set parsed_data=true to receive ready-to-use structured JSON.",
-  "version": "1.4",
+  "version": "1.5",
   "buildTag": "latest",
   "meta": {
     "templateId": "python-start"
   },
   "input": "./input_schema.json",
   "output": "./output_schema.json",
+  "storages": {
+    "dataset": "./dataset_schema.json"
+  },
   "dockerfile": "./Dockerfile"
 }
