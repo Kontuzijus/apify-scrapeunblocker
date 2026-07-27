@@ -139,4 +139,4 @@ curl -X POST "https://api.apify.com/v2/acts/scrapeunblocker~scrapeunblocker/run-
 
 ScrapeUnblocker also offers SERP scraping, image fetching, cookies retrieval and more.
 
-👉 Explore the full documentation and feature set at **[scrapeunblocker.com](https://www.scrapeunblocker.com/)**
+👉 Explore the full documentation and feature set at **[scrapeunblocker.com](https://www.scrapeunblocker.com/?utm_source=apify&utm_medium=integration&utm_campaign=apify-actor)**
