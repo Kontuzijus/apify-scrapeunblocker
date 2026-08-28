@@ -14,6 +14,27 @@
       "type": "boolean",
       "description": "If enabled, returns structured JSON data extracted from the page (via Schema.org / __NEXT_DATA__ / AI rules) instead of the raw HTML.",
       "default": false
+    },
+    "proxy_country": {
+      "title": "Proxy country",
+      "type": "string",
+      "description": "Route the request through an exit proxy in a specific country. Leave as Random to let ScrapeUnblocker pick the best country for the target.",
+      "editor": "select",
+      "default": "",
+      "enum": [
+        "",
+        "AT", "BE", "BG", "BR", "CA", "CH", "CN", "DE", "DK", "EE",
+        "ES", "FR", "GB", "GR", "HK", "HR", "IE", "IL", "IT", "JP",
+        "KR", "LT", "LU", "LV", "MD", "NL", "NO", "PL", "RO", "RS",
+        "SE", "SG", "TH", "TR", "TW", "US"
+      ],
+      "enumTitles": [
+        "Random (European)",
+        "Austria (AT)", "Belgium (BE)", "Bulgaria (BG)", "Brazil (BR)", "Canada (CA)", "Switzerland (CH)", "China (CN)", "Germany (DE)", "Denmark (DK)", "Estonia (EE)",
+        "Spain (ES)", "France (FR)", "United Kingdom (GB)", "Greece (GR)", "Hong Kong (HK)", "Croatia (HR)", "Ireland (IE)", "Israel (IL)", "Italy (IT)", "Japan (JP)",
+        "South Korea (KR)", "Lithuania (LT)", "Luxembourg (LU)", "Latvia (LV)", "Moldova (MD)", "Netherlands (NL)", "Norway (NO)", "Poland (PL)", "Romania (RO)", "Serbia (RS)",
+        "Sweden (SE)", "Singapore (SG)", "Thailand (TH)", "Turkey (TR)", "Taiwan (TW)", "United States (US)"
+      ]
     }
   },
   "required": ["url"]

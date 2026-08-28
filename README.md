@@ -59,6 +59,17 @@ Parsed structured JSON:
 }
 ```
 
+Target a specific exit country (optional):
+
+```json
+{
+  "url": "https://example.com",
+  "proxy_country": "DE"
+}
+```
+
+`proxy_country` is a two-letter ISO country code. Leave it empty (Random) to let ScrapeUnblocker pick the best country for the target. Available: AT, BE, BG, BR, CA, CH, CN, DE, DK, EE, ES, FR, GB, GR, HK, HR, IE, IL, IT, JP, KR, LT, LU, LV, MD, NL, NO, PL, RO, RS, SE, SG, TH, TR, TW, US.
+
 ---
 
 ## 📤 Output

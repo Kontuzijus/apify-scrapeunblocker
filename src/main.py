@@ -20,6 +20,7 @@ async def main():
         input_data = await Actor.get_input() or {}
         url = input_data.get("url")
         parsed_data = bool(input_data.get("parsed_data", False))
+        proxy_country = (input_data.get("proxy_country") or "").strip()
 
         if not url:
             raise Exception("Missing 'url' input")
@@ -33,6 +34,9 @@ async def main():
         params = {"url": url}
         if parsed_data:
             params["parsed_data"] = "true"
+        if proxy_country:
+            # Two-letter ISO country code for the exit proxy (e.g. "US", "DE").
+            params["proxy_country"] = proxy_country
 
         # parsed_data mode may need extra polls for the 202 "processing" state;
         # plain HTML mode keeps the original single-immediate-retry behaviour.
