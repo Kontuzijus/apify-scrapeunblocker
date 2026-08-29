@@ -15,6 +15,18 @@
       "description": "If enabled, returns structured JSON data extracted from the page (via Schema.org / __NEXT_DATA__ / AI rules) instead of the raw HTML.",
       "default": false
     },
+    "list_elements": {
+      "title": "List interactive elements",
+      "type": "boolean",
+      "description": "Return the page's interactive elements (buttons, inputs, selects, links, forms) with ready-to-use selectors instead of HTML - useful to discover what to target before building Browser steps.",
+      "default": false
+    },
+    "steps": {
+      "title": "Browser steps",
+      "type": "array",
+      "description": "An ordered list of browser actions to run after the page loads: wait_for, wait_for_text, wait, click, type, select, press_key, scroll. Example: [{\"action\":\"type\",\"selector\":\"#q\",\"value\":\"bmw\"},{\"action\":\"press_key\",\"value\":\"Enter\"},{\"action\":\"wait_for\",\"selector\":\".results\"}]. Runs once (non-idempotent); a failed step returns which step failed plus the page HTML.",
+      "editor": "json"
+    },
     "proxy_country": {
       "title": "Proxy country",
       "type": "string",
