@@ -5,6 +5,9 @@
   "description": "Bypass anti-bot systems (Cloudflare, DataDome, PerimeterX, Akamai) and scrape any URL. Get clean full-page HTML, or set parsed_data=true to receive ready-to-use structured JSON.",
   "version": "1.7",
   "buildTag": "latest",
+  "environmentVariables": {
+    "SCRAPEUNBLOCKER_KEY": "@SCRAPEUNBLOCKER_KEY"
+  },
   "meta": {
     "templateId": "python-start"
   },
