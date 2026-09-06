@@ -34,9 +34,73 @@ This is a genuine superpower: bypass the anti-bot **and** the data is already st
 
 * Fetch full HTML from protected websites
 * **Optional parsed JSON output** (`parsed_data: true`)
+* **Browser steps** — click, type, select, scroll, wait for elements before capturing the page (`steps`)
+* **Discover interactive elements** with ready-to-use selectors (`list_elements: true`)
 * Supports Cloudflare, PerimeterX, DataDome, Akamai
 * Built-in rotating proxies
+* Target a specific exit country (`proxy_country`)
 * Minimal input (only URL required)
+
+---
+
+## 🖱️ NEW: Interact with the page before capturing (`steps`)
+
+Some pages only show what you need **after** you interact — type into a search box, click a button, accept a cookie banner, or wait for results to load. With `steps` you describe those actions and ScrapeUnblocker runs them in a real browser, then returns the resulting page.
+
+`steps` is an **ordered list** of actions. Each action is an object with an `action` and, depending on the action, a `selector` and/or a `value`:
+
+| Action | What it does | Needs |
+|--------|--------------|-------|
+| `wait_for` | Wait until an element appears | `selector` |
+| `wait_for_text` | Wait until some text appears on the page | `value` |
+| `wait` | Wait a fixed number of milliseconds | `value` (ms) |
+| `click` | Click an element | `selector` |
+| `type` | Type text into an input | `selector`, `value` |
+| `select` | Pick an option in a `<select>` | `selector`, `value` |
+| `press_key` | Press a keyboard key (e.g. `Enter`) | `value` |
+| `scroll` | Scroll the page (e.g. `bottom`) | `value` |
+
+**Example — search for "bmw" and wait for the results:**
+
+```json
+{
+  "url": "https://example.com",
+  "steps": [
+    { "action": "type", "selector": "#q", "value": "bmw" },
+    { "action": "press_key", "value": "Enter" },
+    { "action": "wait_for", "selector": ".results" }
+  ]
+}
+```
+
+* Steps run **once** (they are non-idempotent — a step may submit a form), so this mode does not auto-retry.
+* If a step fails (bad selector, element never appeared), the Actor returns a structured error telling you **which step failed** (`step_index`, `action`, `reason`) plus the page HTML at that point — so you can fix the selector.
+
+---
+
+## 🔎 NEW: Discover what to click (`list_elements`)
+
+Not sure which selector to target? Set `list_elements: true` and, instead of HTML, the Actor returns the page's **interactive elements** (buttons, inputs, selects, links, forms) with ready-to-use selectors. Use it to build your `steps` list.
+
+```json
+{
+  "url": "https://example.com",
+  "list_elements": true
+}
+```
+
+Returns:
+
+```json
+{
+  "url": "https://example.com",
+  "count": 3,
+  "elements": [
+    { "tag": "input", "selector": "#q", "id": "q", "text": "" },
+    { "tag": "button", "selector": ".search-btn", "text": "Search" }
+  ]
+}
+```
 
 ---
 
