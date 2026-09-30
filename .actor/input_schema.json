@@ -7,6 +7,8 @@
       "title": "Target URL",
       "type": "string",
       "description": "The URL you want to scrape",
+      "prefill": "https://books.toscrape.com/",
+      "default": "https://books.toscrape.com/",
       "editor": "textfield"
     },
     "parsed_data": {
