@@ -200,11 +200,23 @@ curl -X POST "https://api.apify.com/v2/acts/scrapeunblocker~scrapeunblocker/run-
 * Feeding HTML into BeautifulSoup / Cheerio / LLMs
 * Monitoring competitor pages
 
+**Page does not exist** — if the site answers HTTP 404 or 410, the run still succeeds and the item is marked, with the site's own not-found page in `html` (or `data`):
+
+```json
+{
+  "url": "https://example.com/removed-product",
+  "html": "<html>...404 Not Found...</html>",
+  "origin_status": 404,
+  "page_not_found": true
+}
+```
+
 ---
 
 ## ⚠️ Important notes
 
 * **Retries are expected:** Due to the nature of complex anti-bot systems, requests might not always succeed on the first try and you may encounter errors. If a request fails, we highly recommend trying again, as subsequent attempts are often successful.
+* **A missing page is final:** an item with `page_not_found: true` is the site's own answer, not a block, so retrying it returns the same result. It is charged like any other result.
 * When `parsed_data: true` is used on a brand-new domain, extraction rules may still be generating — the Actor automatically waits and retries until the parsed result is ready.
 * Response time depends on target protection level
 

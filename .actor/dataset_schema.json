@@ -15,6 +15,18 @@
         "description": "Full page HTML returned for the URL (present when parsed_data is false)",
         "example": "<html>...</html>"
       },
+      "page_not_found": {
+        "type": "boolean",
+        "title": "Page not found",
+        "description": "Present and true when the site answered HTTP 404/410 (the page does not exist); html/data then hold the site's own not-found page",
+        "example": true
+      },
+      "origin_status": {
+        "type": "integer",
+        "title": "Site status",
+        "description": "The site's own HTTP status (404 or 410) when page_not_found is true",
+        "example": 404
+      },
       "data": {
         "type": "object",
         "title": "Parsed data",

@@ -13,6 +13,34 @@ urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 PARSED_POLL_DELAY_S = 5
 PARSED_MAX_POLLS = 6
 
+TARGET_GONE = {404, 410}
+
+
+def target_gone_status(response):
+    """The target's own "page does not exist" answer (404/410), or None.
+
+    /getPageSource always exists, so a 404/410 from it is the target site's
+    answer, sent with X-Origin-Status. Older API versions returned that same
+    answer as a 200 carrying the header, so the header is checked first.
+    """
+    try:
+        origin = int(response.headers.get("X-Origin-Status", ""))
+    except (TypeError, ValueError):
+        origin = None
+    if origin in TARGET_GONE:
+        return origin
+    return response.status_code if response.status_code in TARGET_GONE else None
+
+def json_body(response, gone):
+    """The JSON body; a site's not-found answer may come with no body at all."""
+    try:
+        return response.json()
+    except ValueError:
+        if gone is None:
+            raise
+        return {}
+
+
 async def main():
     async with Actor:
         print("✅ ScrapeUnblocker started")
@@ -61,7 +89,8 @@ async def main():
                 verify=False,
             )
 
-            if response.status_code == 200:
+            # A missing target page is final: retrying returns the same answer.
+            if response.status_code == 200 or target_gone_status(response) is not None:
                 break
 
             # AI extraction rules still being generated — wait and re-poll.
@@ -87,19 +116,26 @@ async def main():
             await Actor.push_data({"url": url, "step_error": err})
             return
 
-        if response is None or response.status_code != 200:
+        gone = target_gone_status(response) if response is not None else None
+        if gone is not None:
+            print(f"⚠️ The target page does not exist: the site answered HTTP {gone}. "
+                  "Its own page is delivered below; the call is billed and a retry returns the same answer.")
+        # Marks a dataset item as the site's own not-found answer.
+        gone_fields = {"origin_status": gone, "page_not_found": True} if gone is not None else {}
+
+        if response is None or (response.status_code != 200 and gone is None):
             status = response.status_code if response is not None else "no response"
             body = response.text[:500] if response is not None else ""
             raise Exception(f"❌ ScrapeUnblocker failed after {max_attempts} attempts. Final status code: {status}. Response: {body}")
 
         if list_elements:
             # API returns { "url", "count", "elements": [...] }.
-            payload = response.json()
+            payload = json_body(response, gone)
             await Actor.set_value("OUTPUT", json.dumps(payload, ensure_ascii=False), content_type="application/json")
-            await Actor.push_data(payload)
+            await Actor.push_data({**payload, **gone_fields} if isinstance(payload, dict) else payload)
         elif parsed_data:
             # API returns { "data": <parsed JSON, shape varies by page type> }.
-            payload = response.json()
+            payload = json_body(response, gone)
             data = payload.get("data", payload)
 
             await Actor.set_value("OUTPUT", json.dumps(data, ensure_ascii=False), content_type="application/json")
@@ -108,7 +144,7 @@ async def main():
             # key (matches the README contract and lets the dataset schema render
             # it as an Object field). Nesting also avoids spreading a non-dict
             # (the parsed payload can be a list).
-            await Actor.push_data({"url": url, "data": data})
+            await Actor.push_data({"url": url, "data": data, **gone_fields})
         else:
             response.encoding = "utf-8"
             html = response.text
@@ -120,6 +156,7 @@ async def main():
             await Actor.push_data({
                 "url": url,
                 "html": html,
+                **gone_fields,
             })
 
 if __name__ == "__main__":
