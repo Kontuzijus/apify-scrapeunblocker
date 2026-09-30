@@ -7,6 +7,12 @@
       "type": "string",
       "title": "HTML Output",
       "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/OUTPUT"
+    },
+    "errors": {
+      "type": "string",
+      "title": "Errors",
+      "description": "Inputs that returned no result (for example a page that does not exist), not charged",
+      "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/ERRORS"
     }
   }
 }
