@@ -217,6 +217,7 @@ curl -X POST "https://api.apify.com/v2/acts/scrapeunblocker~scrapeunblocker/run-
 ## ⚠️ Important notes
 
 * **Retries are expected:** Due to the nature of complex anti-bot systems, requests might not always succeed on the first try and you may encounter errors. If a request fails, we highly recommend trying again, as subsequent attempts are often successful.
+* **Nothing to parse is not charged:** with `parsed_data: true`, a page that loads but holds no structured data creates no dataset item; the `ERRORS` record says so. Run again with `parsed_data: false` to get the HTML.
 * **A missing page is final:** a 404/410 from the site is its own answer, not a block, so retrying returns the same result. It is recorded in `ERRORS` and not charged.
 * When `parsed_data: true` is used on a brand-new domain, extraction rules may still be generating — the Actor automatically waits and retries until the parsed result is ready.
 * Response time depends on target protection level
