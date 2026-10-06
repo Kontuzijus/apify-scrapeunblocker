@@ -32,18 +32,6 @@ def target_gone_status(response):
     return response.status_code if response.status_code in TARGET_GONE else None
 
 
-def no_data_extracted(response):
-    """True for the API's parsed_data answer "page rendered, nothing to extract".
-
-    It is a 422 with {"error": "no_data_extracted"}: final, not billed, no HTML.
-    """
-    if response.status_code != 422:
-        return False
-    try:
-        return response.json().get("error") == "no_data_extracted"
-    except (ValueError, AttributeError):
-        return False
-
 async def main():
     async with Actor:
         print("✅ ScrapeUnblocker started")
@@ -92,9 +80,8 @@ async def main():
                 verify=False,
             )
 
-            # A missing target page or an empty parse is final: retrying returns the same answer.
-            if (response.status_code == 200 or target_gone_status(response) is not None
-                    or no_data_extracted(response)):
+            # A missing target page is final: retrying returns the same answer.
+            if response.status_code == 200 or target_gone_status(response) is not None:
                 break
 
             # AI extraction rules still being generated — wait and re-poll.
@@ -106,18 +93,6 @@ async def main():
             print(f"⚠️ Warning: Received status code {response.status_code}. Response: {response.text[:500]}")
             if attempt < max_attempts - 1:
                 print("⏳ Retrying immediately...")
-
-        # Nothing structured on the page is a failed input, not a result: ERRORS
-        # record only, so the user is not charged (the API does not bill it either).
-        if response is not None and no_data_extracted(response):
-            error = ("No structured data could be extracted from this page: it loaded, but nothing "
-                     "on it matched a structured shape. Run again with parsed_data off to get the HTML.")
-            print(f"⚠️ {error}")
-            await Actor.set_value("OUTPUT", response.text, content_type="application/json")
-            await Actor.set_value("ERRORS", [{"url": url, "error": error, "reason": "no_data_extracted"}])
-            await Actor.set_status_message(
-                "0 results; no structured data on the page, not charged - see the ERRORS record")
-            return
 
         # A user step failed at run time (bad selector, element never appeared).
         # This is a definitive answer, not a transient failure - surface the
@@ -161,6 +136,25 @@ async def main():
             # API returns { "data": <parsed JSON, shape varies by page type> }.
             payload = response.json()
             data = payload.get("data", payload)
+
+            if isinstance(payload, dict) and payload.get("data_extracted") is False:
+                # The page rendered but held no structured data. The API still
+                # answers 200 with the rendered page, billed like an HTML fetch,
+                # so the result keeps that HTML and says nothing was extracted.
+                item = {
+                    "url": url,
+                    "data": data,
+                    "data_extracted": False,
+                    "detail": payload.get("detail"),
+                    "html": payload.get("html"),
+                }
+                print("⚠️ No structured data could be extracted; returning the rendered HTML.")
+                await Actor.set_value("OUTPUT", json.dumps(item, ensure_ascii=False),
+                                      content_type="application/json")
+                await Actor.push_data(item)
+                await Actor.set_status_message(
+                    "1 result; no structured data on the page - the rendered HTML is in the html field")
+                return
 
             await Actor.set_value("OUTPUT", json.dumps(data, ensure_ascii=False), content_type="application/json")
 
