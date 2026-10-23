@@ -12,8 +12,20 @@
       "html": {
         "type": "string",
         "title": "HTML",
-        "description": "Full page HTML returned for the URL (present when parsed_data is false)",
+        "description": "Full page HTML returned for the URL (present when parsed_data is false, or when parsed_data found nothing to extract)",
         "example": "<html>...</html>"
+      },
+      "data_extracted": {
+        "type": "boolean",
+        "title": "Data extracted",
+        "description": "false when parsed_data found no structured data on the page; the rendered page is then in html (absent on a successful parse)",
+        "example": false
+      },
+      "detail": {
+        "type": "string",
+        "title": "Detail",
+        "description": "Explanation sent with data_extracted false",
+        "example": "The page was rendered, but no structured data could be extracted from it."
       },
       "data": {
         "type": "object",
