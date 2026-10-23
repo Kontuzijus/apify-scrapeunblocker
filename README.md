@@ -1,8 +1,8 @@
-# 🚀 ScrapeUnblocker - Bypass Anti-Bot Systems & Get Clean HTML or Parsed JSON
+# 🚀 ScrapeUnblocker - Bypass Anti-Bot Systems & Get Clean HTML, Markdown or Parsed JSON
 
 **ScrapeUnblocker is the most advanced tool on the market, capable of defeating the most complex protections and anti-bot systems.** It fetches the full HTML of almost any website effortlessly — and can now return **ready-to-use structured JSON** instead of raw HTML.
 
-Just provide a URL → get clean HTML, or flip one switch → get **parsed data** extracted for you.
+Just provide a URL → get clean HTML, or flip one switch → get **parsed data** extracted for you, or the page as **clean Markdown** for your LLM.
 
 ---
 
@@ -30,10 +30,37 @@ This is a genuine superpower: bypass the anti-bot **and** the data is already st
 
 ---
 
+## 📝 NEW: Get the page as Markdown for LLMs (`markdown`)
+
+Set `markdown: true` and the Actor returns the page as **clean Markdown** instead of HTML: headings, lists, tables, absolute links, images with their alt text and code blocks, without scripts, styles, navigation, footers, forms or hidden elements. It is built for LLMs, AI agents and RAG pipelines: no HTML cleanup on your side, and the Markdown is usually a small fraction of the HTML's size, so it costs far fewer tokens.
+
+* 🎯 **Main content only by default** - navigation, the site header, footer and sidebars are dropped (`main_content_only: true`). Set `main_content_only: false` to convert the whole page.
+* 🔁 Works with `proxy_country` and `steps`, and is charged like an HTML result.
+* `markdown` cannot be combined with `parsed_data` or `list_elements`, which return their own JSON formats.
+
+```json
+{
+  "url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
+  "markdown": true
+}
+```
+
+Returns one dataset item:
+
+```json
+{
+  "url": "https://books.toscrape.com/catalogue/a-light-in-the-attic_1000/index.html",
+  "markdown": "...\n\n# A Light in the Attic\n\n£51.77\n\nIn stock (22 available)\n\n..."
+}
+```
+
+---
+
 ## 🛠️ Features
 
 * Fetch full HTML from protected websites
 * **Optional parsed JSON output** (`parsed_data: true`)
+* **Clean Markdown output** for LLMs, AI agents and RAG (`markdown: true`)
 * **Browser steps** — click, type, select, scroll, wait for elements before capturing the page (`steps`)
 * **Discover interactive elements** with ready-to-use selectors (`list_elements: true`)
 * Supports Cloudflare, PerimeterX, DataDome, Akamai
@@ -123,6 +150,15 @@ Parsed structured JSON:
 }
 ```
 
+Clean Markdown (main content only, unless `main_content_only` is `false`):
+
+```json
+{
+  "url": "https://example.com",
+  "markdown": true
+}
+```
+
 Target a specific exit country (optional):
 
 ```json
@@ -162,6 +198,15 @@ Target a specific exit country (optional):
 }
 ```
 
+**With `markdown: true`** - one dataset item with the page as Markdown:
+
+```json
+{
+  "url": "https://example.com",
+  "markdown": "# Page title\n\nThe main content of the page..."
+}
+```
+
 ---
 
 ## 🚀 How to use
@@ -198,6 +243,7 @@ curl -X POST "https://api.apify.com/v2/acts/scrapeunblocker~scrapeunblocker/run-
 * Scraping marketplaces (cars, real estate, e-commerce)
 * Extracting **structured data** from protected pages without writing parsers
 * Feeding HTML into BeautifulSoup / Cheerio / LLMs
+* Feeding clean Markdown straight into LLMs, AI agents and RAG pipelines
 * Monitoring competitor pages
 
 **Page does not exist** — if the site answers HTTP 404 or 410, no dataset item is created and you are not charged. The run still succeeds; the `ERRORS` record in the key-value store explains it, and `OUTPUT` holds the site's own not-found page:

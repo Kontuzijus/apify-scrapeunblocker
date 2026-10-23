@@ -17,6 +17,18 @@
       "description": "If enabled, returns structured JSON data extracted from the page (via Schema.org / __NEXT_DATA__ / AI rules) instead of the raw HTML.",
       "default": false
     },
+    "markdown": {
+      "title": "Return Markdown (for LLMs)",
+      "type": "boolean",
+      "description": "If enabled, returns the page as clean Markdown instead of HTML: headings, lists, tables, absolute links, images with alt text and code blocks, without scripts, styles, navigation, footers or forms. Built for LLMs, AI agents and RAG, and charged like an HTML result. Cannot be combined with parsed data or list elements.",
+      "default": false
+    },
+    "main_content_only": {
+      "title": "Markdown: main content only",
+      "type": "boolean",
+      "description": "Used with Markdown: keep only the page's main content and drop navigation, the site header, footer and sidebars. Turn off to convert the whole page.",
+      "default": true
+    },
     "list_elements": {
       "title": "List interactive elements",
       "type": "boolean",

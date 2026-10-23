@@ -1,11 +1,11 @@
 {
   "actorOutputSchemaVersion": 1,
   "title": "ScrapeUnblocker output",
-  "description": "Returns scraped HTML output",
+  "description": "Returns the scraped page as HTML, Markdown or JSON",
   "properties": {
     "html": {
       "type": "string",
-      "title": "HTML Output",
+      "title": "Page output (HTML, Markdown or JSON)",
       "template": "{{links.apiDefaultKeyValueStoreUrl}}/records/OUTPUT"
     },
     "errors": {

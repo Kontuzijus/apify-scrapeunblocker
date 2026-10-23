@@ -15,6 +15,12 @@
         "description": "Full page HTML returned for the URL (present when parsed_data is false, or when parsed_data found nothing to extract)",
         "example": "<html>...</html>"
       },
+      "markdown": {
+        "type": "string",
+        "title": "Markdown",
+        "description": "The page as clean Markdown (present when markdown is true)",
+        "example": "# Page title\n\nMain content of the page..."
+      },
       "data_extracted": {
         "type": "boolean",
         "title": "Data extracted",
@@ -62,6 +68,26 @@
           },
           "html": {
             "label": "HTML",
+            "format": "text"
+          }
+        }
+      }
+    },
+    "markdown": {
+      "title": "Markdown",
+      "description": "Markdown output (markdown = true)",
+      "transformation": {
+        "fields": ["url", "markdown"]
+      },
+      "display": {
+        "component": "table",
+        "properties": {
+          "url": {
+            "label": "Scraped URL",
+            "format": "link"
+          },
+          "markdown": {
+            "label": "Markdown",
             "format": "text"
           }
         }

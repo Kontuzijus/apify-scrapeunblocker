@@ -40,11 +40,20 @@ async def main():
         url = input_data.get("url")
         parsed_data = bool(input_data.get("parsed_data", False))
         list_elements = bool(input_data.get("list_elements", False))
+        markdown = bool(input_data.get("markdown", False))
+        main_content_only = bool(input_data.get("main_content_only", True))
         steps = input_data.get("steps") or None
         proxy_country = (input_data.get("proxy_country") or "").strip()
 
         if not url:
             raise Exception("Missing 'url' input")
+
+        if markdown and (parsed_data or list_elements):
+            # The API refuses these combinations (422): each one returns its own format.
+            error = ("Markdown cannot be combined with parsed data or list elements: each returns "
+                     "its own format. Turn one of them off.")
+            await Actor.set_status_message(error, is_terminal=True)
+            raise ValueError(error)
 
         headers = {
             "Content-Type": "application/x-www-form-urlencoded",
@@ -57,6 +66,9 @@ async def main():
             params["parsed_data"] = "true"
         if list_elements:
             params["list_elements"] = "true"
+        if markdown:
+            params["markdown"] = "true"
+            params["main_content_only"] = "true" if main_content_only else "false"
         if steps:
             # Ordered browser actions, JSON-encoded into the query param.
             params["steps"] = json.dumps(steps)
@@ -65,7 +77,7 @@ async def main():
             params["proxy_country"] = proxy_country
 
         # parsed_data mode may need extra polls for the 202 "processing" state;
-        # plain HTML mode keeps the original single-immediate-retry behaviour.
+        # HTML and Markdown modes keep the original single-immediate-retry behaviour.
         # Steps are non-idempotent (a step may submit a form), so they run once.
         max_attempts = PARSED_MAX_POLLS if parsed_data else 2
         if steps:
@@ -163,6 +175,15 @@ async def main():
             # it as an Object field). Nesting also avoids spreading a non-dict
             # (the parsed payload can be a list).
             await Actor.push_data({"url": url, "data": data})
+        elif markdown:
+            # The page as Markdown (text/markdown), billed like HTML.
+            response.encoding = "utf-8"
+            text = response.text
+            await Actor.set_value("OUTPUT", text, content_type="text/markdown; charset=utf-8")
+            await Actor.push_data({
+                "url": url,
+                "markdown": text,
+            })
         else:
             response.encoding = "utf-8"
             html = response.text
