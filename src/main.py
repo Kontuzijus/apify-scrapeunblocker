@@ -16,6 +16,17 @@ PARSED_MAX_POLLS = 6
 TARGET_GONE = {404, 410}
 
 
+def refusal_code(response):
+    """The API's X-SU-Error-Code when it refused this URL outright, else None.
+
+    The code marks a final answer no retry can change: a login or payment page,
+    a government site, a secret file, or a path the site serves only to
+    verified search-engine crawlers (crawler_only_target)."""
+    if response is None or not 400 <= response.status_code < 500:
+        return None
+    return (response.headers.get("X-SU-Error-Code") or "").strip() or None
+
+
 def target_gone_status(response):
     """The target's own "page does not exist" answer (404/410), or None.
 
@@ -92,8 +103,10 @@ async def main():
                 verify=False,
             )
 
-            # A missing target page is final: retrying returns the same answer.
-            if response.status_code == 200 or target_gone_status(response) is not None:
+            # A missing target page or an outright refusal is final: retrying
+            # returns the same answer.
+            if (response.status_code == 200 or target_gone_status(response) is not None
+                    or refusal_code(response)):
                 break
 
             # AI extraction rules still being generated — wait and re-poll.
@@ -117,6 +130,21 @@ async def main():
             print(f"⚠️ Step {err.get('step_index')} ({err.get('action')}) failed: {err.get('reason')}")
             await Actor.set_value("OUTPUT", json.dumps(err, ensure_ascii=False), content_type="application/json")
             await Actor.push_data({"url": url, "step_error": err})
+            return
+
+        # A URL the API refuses outright is a failed input too: the reason goes
+        # to the ERRORS record, nothing to the dataset, so it is not charged.
+        # OUTPUT carries the same record, so a run-sync caller gets the reason.
+        refusal = refusal_code(response)
+        if refusal:
+            error = response.text.strip()[:500] or f"This URL cannot be fetched ({refusal})."
+            print(f"⚠️ {error}")
+            record = {"url": url, "error": error, "error_code": refusal}
+            await Actor.set_value("OUTPUT", json.dumps(record, ensure_ascii=False),
+                                  content_type="application/json")
+            await Actor.set_value("ERRORS", [record])
+            await Actor.set_status_message(
+                f"0 results; this URL cannot be fetched ({refusal}), not charged - see the ERRORS record")
             return
 
         # A page that does not exist is a failed input, not a result: it goes to

@@ -258,6 +258,18 @@ curl -X POST "https://api.apify.com/v2/acts/scrapeunblocker~scrapeunblocker/run-
 ]
 ```
 
+**URL that cannot be fetched** — some URLs are refused outright, for example a file the site serves only to verified search-engine crawlers (Facebook's sitemaps), a login or payment page, or a government site. No dataset item is created and you are not charged; the run still succeeds and the `ERRORS` record (and `OUTPUT`) gives the reason and its `error_code`:
+
+```json
+[
+  {
+    "url": "https://www.facebook.com/sitemap/groups_latest_posts_0.xml.gz",
+    "error": "This site serves this URL only to search-engine crawlers it verifies by IP address, ...",
+    "error_code": "crawler_only_target"
+  }
+]
+```
+
 ---
 
 ## ⚠️ Important notes
@@ -265,6 +277,7 @@ curl -X POST "https://api.apify.com/v2/acts/scrapeunblocker~scrapeunblocker/run-
 * **Retries are expected:** Due to the nature of complex anti-bot systems, requests might not always succeed on the first try and you may encounter errors. If a request fails, we highly recommend trying again, as subsequent attempts are often successful.
 * **Nothing to parse still returns the page:** with `parsed_data: true`, a page that loads but holds no structured data creates one dataset item with `"data_extracted": false`, a `detail` line and the rendered page in `html` - charged like any other result.
 * **A missing page is final:** a 404/410 from the site is its own answer, not a block, so retrying returns the same result. It is recorded in `ERRORS` and not charged.
+* **A refused URL is final too:** an `ERRORS` record with an `error_code` will not change on retry.
 * When `parsed_data: true` is used on a brand-new domain, extraction rules may still be generating — the Actor automatically waits and retries until the parsed result is ready.
 * Response time depends on target protection level
 
